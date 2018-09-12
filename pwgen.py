@@ -26,7 +26,7 @@ class PwGen(object):
         self.one_line = one_line
         self.no_capitalize = no_capitalize
 
-    def _pw_char(self, chars: list):
+    def _pw_char(self, chars: list) -> str:
         for _ in range(self.pw_length):
             # additional logic should be here
             yield random.choice(chars)
@@ -55,8 +55,8 @@ class PwGen(object):
         self._passwords = [self.generate() for _ in range(self.num_pw)]
         return self._passwords
 
-    def print(self):
-        """Print generated password in one line or by columns"""
+    def print(self) -> None:
+        """Prints generated password in one line or by columns"""
         if self.one_line:
             print(' '.join(self.passwords))
             return
