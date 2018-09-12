@@ -51,10 +51,8 @@ class PwGen(object):
         """Returns all generated password"""
         if self._passwords:
             return self._passwords
-        i = 0
-        while i < self.num_pw:
-            self._passwords.append(self.generate())
-            i += 1
+
+        self._passwords = [self.generate() for _ in range(self.num_pw)]
         return self._passwords
 
     def print(self):
