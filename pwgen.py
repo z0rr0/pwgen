@@ -1,10 +1,11 @@
 #!/usr/bin/env python3.7
 
 import argparse
+import hashlib
 import sys
-import random
 
-from typing import List
+from random import Random, SystemRandom
+from typing import List, BinaryIO
 
 
 PW_DIGITS = '0123456789'
@@ -21,8 +22,9 @@ class PwGen(object):
     SCREEN_WIDTH = 80
 
     def __init__(self, pw_length: int, num_pw: int,
-                 no_numerals=False, one_line=False, no_capitalize=False, ambiguous=False, symbols=False, 
-                 numerals=False, no_vowels=False, remove_chars=None):
+                 no_numerals: bool=False, one_line: bool=False, no_capitalize: bool=False,
+                 ambiguous: bool=False, symbols: bool=False, numerals: bool=False,
+                 no_vowels: bool=False, secure: bool=False, remove_chars: str=None, sha1: BinaryIO=None):
         self.pw_length = pw_length
         self.num_pw = num_pw
         self._passwords = []
@@ -34,6 +36,9 @@ class PwGen(object):
         self.symbols = symbols
         self.numerals = numerals
         self.no_vowels = no_vowels
+
+        seed = hashlib.md5(sha1.read()).hexdigest() if sha1 else None
+        self.random = SystemRandom(seed) if secure else Random(seed)
         self.remove_chars = set(remove_chars) if remove_chars else set()
 
     def _pw_char(self, chars: list) -> str:
@@ -41,19 +46,19 @@ class PwGen(object):
         n = self.pw_length
         if self.symbols:
             # generate a special symbol
-            c = random.choice(PW_SYMBOLS)
+            c = self.random.choice(PW_SYMBOLS)
             n -= 1
             yield c
 
         if not self.no_numerals and self.numerals and n > 0:
             # generate a diginal symbol
-            c = random.choice(PW_DIGITS)
+            c = self.random.choice(PW_DIGITS)
             n -= 1
             yield c
 
         i = 0
         while i < n:
-            c = random.choice(chars)
+            c = self.random.choice(chars)
             # additional logic should be here
             if self.ambiguous and c in PW_AMBIGUOUS:
                 continue
@@ -84,7 +89,7 @@ class PwGen(object):
         """Generates a password"""
         chars = chars or self.chars()
         password = [c for c in self._pw_char(chars)]
-        random.shuffle(password)
+        self.random.shuffle(password)
         return ''.join(password)
 
     @property
@@ -136,7 +141,10 @@ if __name__ == '__main__':
         '-B', '--ambiguous',
         dest='ambiguous',
         action='store_true',
-        help="don't use characters that could be confused by the user when printed, such as 'l' and '1', or '0' or 'O'.  This reduces the number of possible passwords significantly, and as such reduces the quality of the  passwords.It may be useful for users who have bad vision, but in general use of this option is not recommended."
+        help="don't use characters that could be confused by the user when printed, "
+             "such as 'l' and '1', or '0' or 'O'.  This reduces the number of possible passwords significantly, "
+             "and as such reduces the quality of the  passwords.It may be useful for users who have bad vision, "
+             "but in general use of this option is not recommended."
     )
     parser.add_argument(
         '-y', '--symbols',
@@ -155,13 +163,36 @@ if __name__ == '__main__':
         '-v', '---no-vowels',
         dest='no_vowels',
         action='store_true',
-        help='Generate random passwords that do not contain vowels or numbers that might be mistaken for vowels. It provides less secure passwords to allow system administrators to not have to worry with random passwords acciden‐tally contain offensive substrings.'
+        help='Generate random passwords that do not contain vowels or numbers that might be mistaken for vowels. '
+             'It provides less secure passwords to allow system administrators to not have to worry '
+             'with random passwords acciden‐tally contain offensive substrings.'
     )
     parser.add_argument(
         '-r', '--remove-chars',
         dest='remove_chars',
         type=str,
-        help='don\'t use the specified characters in password.  This option will disable the phomeme-based generator and uses the random password generator.'
+        help='don\'t use the specified characters in password.  '
+             'This option will disable the phomeme-based generator and uses the random password generator.'
+    )
+    parser.add_argument(
+        '-s', '--secure',
+        dest='secure',
+        action='store_true',
+        help='generate completely random, hard-to-memorize passwords. These should only be used for machine '
+             'passwords,  since otherwise  it\'s almost guaranteed that users will simply write the password on a '
+             'piece of paper taped to the monitor...'
+    )
+    parser.add_argument(
+        '-H', '--sha1',
+        dest='sha1',
+        type=argparse.FileType('rb'),
+        help="will use the sha1's hash of given file and the optional seed to create password. It will allow you to "
+             "compute the same password later, if you remember the file, seed, and pwgen's options used. "
+             "ie: pwgen -H ~/your_favorite.mp3#your@email.com gives a list of possibles passwords for your "
+             "pop3 account, and you can ask this list again and again.\n\nWARNING:  "
+             "The  passwords  generated  using this option are not very random.  "
+             "If you use this option, make sure the attacker can not obtain a copy of the file.  "
+             "Also, note that the name of the file may be easily available from the ~/.history or ~/.bash_history file."
     )
     parser.add_argument('pw_length', type=int, nargs='?', help='password length', default=8)
     parser.add_argument('num_pw', type=int,  nargs='?', help='number of passwords', default=160)
@@ -177,7 +208,9 @@ if __name__ == '__main__':
         symbols=args.symbols,
         numerals=args.numerals,
         no_vowels=args.no_vowels,
+        secure=args.secure,
         remove_chars=args.remove_chars,
+        sha1=args.sha1,
     )
     try:
         pwgen.print()
