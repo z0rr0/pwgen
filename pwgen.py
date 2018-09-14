@@ -2,16 +2,17 @@
 
 import argparse
 import hashlib
+import string
 import sys
 
 from random import Random, SystemRandom
-from typing import List, BinaryIO
+from typing import List, BinaryIO, Generator
 
 
-PW_DIGITS = '0123456789'
-PW_LOWERS = 'abcdefghijklmnopqrstuvwxyz'
-PW_UPPERS = PW_LOWERS.upper()
-PW_SYMBOLS = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+PW_DIGITS = string.digits
+PW_LOWERS = string.ascii_lowercase
+PW_UPPERS = string.ascii_uppercase
+PW_SYMBOLS = string.punctuation
 PW_AMBIGUOUS = 'B8G6I1l0OQDS5Z2'
 PW_VOWELS = '01aeiouyAEIOUY'
 
@@ -27,7 +28,6 @@ class PwGen(object):
                  no_vowels: bool=False, secure: bool=False, remove_chars: str=None, sha1: BinaryIO=None):
         self.pw_length = pw_length
         self.num_pw = num_pw
-        self._passwords = []
         # options
         self.no_numerals = no_numerals
         self.one_line = one_line
@@ -41,8 +41,8 @@ class PwGen(object):
         self.random = SystemRandom(seed) if secure else Random(seed)
         self.remove_chars = set(remove_chars) if remove_chars else set()
 
-    def _pw_char(self, chars: list) -> str:
-        """Generates password chars by required rules"""
+    def _pw_char(self, chars: list) -> Generator[str, None, None]:
+        """Generates password's chars by required rules"""
         n = self.pw_length
         if self.symbols:
             # generate a special symbol
@@ -93,28 +93,24 @@ class PwGen(object):
         return ''.join(password)
 
     @property
-    def passwords(self) -> List[str]:
-        """Returns all generated password"""
-        if self._passwords:
-            return self._passwords
-
+    def passwords(self) -> Generator[str, None, None]:
+        """Generates passwords"""
         chars = self.chars()
-        self._passwords = [self.generate(chars) for _ in range(self.num_pw)]
-        return self._passwords
+        for _ in range(self.num_pw):
+            yield self.generate(chars)
 
     def print(self) -> None:
-        """Prints generated password in one line or by columns"""
+        """Prints outputs passwords in one line or by columns"""
         if self.one_line:
-            print(' '.join(self.passwords))
+            for i, password in enumerate(self.passwords, start=1):
+                end = '\n' if i == self.num_pw else ' '
+                print(password, end=end)
             return
-
+        # print by columns
         columns = self.SCREEN_WIDTH // self.pw_length or 1
-
-        start, stop = 0, columns
-        while start <= self.num_pw:
-            passwords = self.passwords[start:stop]
-            print(' '.join(passwords))
-            start, stop = stop, stop + columns
+        for i, password in enumerate(self.passwords, start=1):
+            end = '\n' if not (i % columns) else ' '
+            print(password, end=end)
 
 
 if __name__ == '__main__':
