@@ -1,0 +1,5 @@
+language: python
+  python:
+    - "3.7"
+  script:
+    - python test_pwgen.py -v
