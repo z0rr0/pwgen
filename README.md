@@ -4,4 +4,4 @@
 
 PwGen - generate pronounceable passwords
 
-It's a python clone of Linus tool [pwgen](https://linux.die.net/man/1/pwgen).
+It's a python clone of Linux tool [pwgen](https://linux.die.net/man/1/pwgen).
