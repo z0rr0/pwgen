@@ -9,14 +9,16 @@ It's a python clone of Linux tool [pwgen](https://linux.die.net/man/1/pwgen).
 ## Usage
 
 ```
-python3.7 pwgen.py 10 20                                                     
-Qjr7aPEfl5 1bRbddTOpv 8ciB3wmO8C 6E4Hy4fkqx 9vKiY1FIJX 050IJzkp3m 30oW3Z5e26 F7u3Nk9SBn
-HmfLwm2bv7 1UNY2KjESA Lw61KQVdu1 NPo4a8TB46 dbz1S0e6J6 dbbVPz2trq keF11N9vej NamOTuW197
-B5LFDboEry 0ypyth2ixA 5C8y06lZxZ oDai22mlsX
+python3.7 pwgen.py 10 20
+xZF9LXajkT wZuylOIV4l bO5MK11qIs k7NrlPrIlr 575Wh7zZD4 SU7SBaXvil sUXQaCPa3G 6oLoQ6eMhi
+SbA6xC2iWF sDRmv4r9gW FUMuGyHR9x s3KfNkz302 8ubu1peEII H7RN73SxpN T7KU5k2JwZ puxgUyK9Fe
+o7xUDHMJNW AS3N1l9JEp v6GQ6fVltP EAFp9yce0D
 
 
 python3.7 pwgen.py --help                                                    
-usage: pwgen.py [-h] [-0] [-1] [-A] [-B] [-y] [-n] [-v] [-r REMOVE_CHARS] [-s] [-H SHA1] [pw_length] [num_pw]
+usage: pwgen.py [-h] [-0] [-1] [-A] [-B] [-y] [-n] [-v] [-r REMOVE_CHARS] [-s]
+                [-H SHA1]                                                    
+                [pw_length] [num_pw]
 
 generate pronounceable passwords
 
@@ -67,10 +69,9 @@ optional arguments:
                         obtain a copy of the file. Also, note that the name of
                         the file may be easily available from the ~/.history
                         or ~/.bash_history file.
-
 ```
 
-## Test
+## Tests
 
 ```sh
 python3.7 test_pwgen.py

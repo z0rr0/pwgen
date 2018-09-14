@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.7
 
 import io
-import random
 import unittest
 
 from pwgen import PwGen, PW_SYMBOLS, PW_AMBIGUOUS, PW_VOWELS
@@ -51,7 +50,7 @@ class TestCase(unittest.TestCase):
             self.assertEqual(pw_length, len(password))
             self.assertTrue(all(c not in PW_VOWELS for c in password), f'password={password}')
 
-    def test_specials_symbols(self):
+    def test_symbols(self):
         pw_length = 5
         pwgen = PwGen(pw_length, 10000, symbols=True)
         chars = pwgen.chars()
@@ -95,8 +94,7 @@ class TestCase(unittest.TestCase):
 
         for password in pwgen.passwords:
             self.assertEqual(pw_length, len(password))
-            self.assertTrue(
-                all(c not in remove_chars for c in password), f'password={password}')
+            self.assertTrue(all(c not in remove_chars for c in password), f'password={password}')
 
 
 if __name__ == '__main__':
