@@ -35,7 +35,7 @@ class PwGen(object):
         self.numerals = numerals
         self.no_vowels = no_vowels
 
-        seed = hashlib.md5(sha1.read()).hexdigest() if sha1 else None
+        seed = hashlib.sha1(sha1.read()).hexdigest() if sha1 else None
         self.random = SystemRandom(seed) if secure else Random(seed)
         self.remove_chars = set(remove_chars) if remove_chars else set()
 
