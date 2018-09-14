@@ -6,7 +6,7 @@ import unittest
 from pwgen import PwGen, PW_SYMBOLS, PW_AMBIGUOUS, PW_VOWELS
 
 
-class TestCase(unittest.TestCase):
+class PwGenTestCase(unittest.TestCase):
 
     def test_numerals(self):
         pw_length = 5

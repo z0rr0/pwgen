@@ -74,7 +74,7 @@ optional arguments:
 ## Tests
 
 ```sh
-python3.7 test_pwgen.py
+python3.7 -m unittest
 ```
 
 ## License

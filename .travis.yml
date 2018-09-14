@@ -3,7 +3,7 @@ language: python
 python:
   - "3.7"
 script:
-  - python test_pwgen.py -v
+  - python3.7 -m unittest -v
 dist: xenial
 sudo: required
 branches:
