@@ -109,7 +109,7 @@ class PwGen(object):
         # print by columns
         columns = self.SCREEN_WIDTH // self.pw_length or 1
         for i, password in enumerate(self.passwords, start=1):
-            end = '\n' if not (i % columns) else ' '
+            end = '\n' if not (i % columns) or (i == self.num_pw) else ' '
             print(password, end=end)
 
 
