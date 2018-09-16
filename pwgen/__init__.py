@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.7
+# coding: utf-8
 
 import hashlib
 import string
@@ -36,7 +37,8 @@ class PwGen(object):
         self.no_vowels = no_vowels
 
         seed = hashlib.sha1(sha1.read()).hexdigest() if sha1 else None
-        self.random = SystemRandom(seed) if secure else Random(seed)
+        random = SystemRandom if secure else Random
+        self.random = random(seed)
         self.remove_chars = set(remove_chars) if remove_chars else set()
 
     def _pw_char(self, chars: list) -> Generator[str, None, None]:
@@ -49,7 +51,7 @@ class PwGen(object):
             yield c
 
         if not self.no_numerals and self.numerals and n > 0:
-            # generate a diginal symbol
+            # generate a digital symbol
             c = self.random.choice(PW_DIGITS)
             n -= 1
             yield c
@@ -57,7 +59,6 @@ class PwGen(object):
         i = 0
         while i < n:
             c = self.random.choice(chars)
-            # additional logic should be here
             if self.ambiguous and c in PW_AMBIGUOUS:
                 continue
             if self.no_vowels and c in PW_VOWELS:
@@ -66,7 +67,7 @@ class PwGen(object):
             yield c
 
     def chars(self) -> List[str]:
-        u"""Builds used chars list"""
+        u"""Builds password's chars list"""
         chars = ''
         if not self.no_numerals:
             chars += PW_DIGITS
