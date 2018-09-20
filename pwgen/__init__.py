@@ -41,34 +41,26 @@ class PwGen(object):
         self.random = random(seed)
         self.remove_chars = set(remove_chars) if remove_chars else set()
 
-    def _pw_char(self, chars: list) -> Generator[str, None, None]:
+    def _char(self, chars: list) -> Generator[str, None, None]:
         """Generates password's chars by required rules"""
         n = self.pw_length
         if self.symbols:
-            # generate a special symbol
+            # generate at least one special symbol
             c = self.random.choice(PW_SYMBOLS)
             n -= 1
             yield c
 
         if not self.no_numerals and self.numerals and n > 0:
-            # generate a digital symbol
+            # generate at least one digital symbol
             c = self.random.choice(PW_DIGITS)
             n -= 1
             yield c
-
-        i = 0
-        while i < n:
-            c = self.random.choice(chars)
-            if self.ambiguous and c in PW_AMBIGUOUS:
-                continue
-            if self.no_vowels and c in PW_VOWELS:
-                continue
-            i += 1
-            yield c
+        for _ in range(n):
+            yield self.random.choice(chars)
 
     def chars(self) -> List[str]:
         u"""Builds password's chars list"""
-        chars = ''
+        chars = PW_LOWERS
         if not self.no_numerals:
             chars += PW_DIGITS
         if not self.no_capitalize:
@@ -76,7 +68,11 @@ class PwGen(object):
         if self.symbols:
             chars += PW_SYMBOLS
 
-        chars += PW_LOWERS
+        if self.ambiguous:
+            self.remove_chars.update(PW_AMBIGUOUS)
+        if self.no_vowels:
+            self.remove_chars.update(PW_VOWELS)
+
         if self.remove_chars:
             chars = set(chars) - self.remove_chars
             # to exclude infinite loop
@@ -87,7 +83,7 @@ class PwGen(object):
     def generate(self, chars: List[str]=None) -> str:
         """Generates a password"""
         chars = chars or self.chars()
-        password = [c for c in self._pw_char(chars)]
+        password = [c for c in self._char(chars)]
         self.random.shuffle(password)
         return ''.join(password)
 
