@@ -105,3 +105,4 @@ if __name__ == '__main__':
         pwgen.print()
     except ValueError as err:
         print(f'ERROR: {err}', file=sys.stderr)
+        sys.exit(1)

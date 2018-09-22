@@ -41,6 +41,9 @@ class PwGen(object):
         self.random = random(seed)
         self.remove_chars = set(remove_chars) if remove_chars else set()
 
+    def __str__(self):
+        return 'PwGen <{}, {}> from "{}"'.format(self.pw_length, self.num_pw, ''.join(self.chars()))
+
     def _char(self, chars: list) -> Generator[str, None, None]:
         """Generates password's chars by required rules"""
         n = self.pw_length
