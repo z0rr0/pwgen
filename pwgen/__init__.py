@@ -3,9 +3,10 @@
 
 import hashlib
 import string
+import sys
 
 from random import Random, SystemRandom
-from typing import List, BinaryIO, Generator
+from typing import BinaryIO, Generator, List, TextIO
 
 
 PW_DIGITS = string.digits
@@ -97,15 +98,15 @@ class PwGen(object):
         for _ in range(self.num_pw):
             yield self.generate(chars)
 
-    def print(self) -> None:
+    def print(self, out: TextIO=sys.stdout) -> None:
         """Prints outputs passwords in one line or by columns"""
         if self.one_line:
             for i, password in enumerate(self.passwords, start=1):
                 end = '\n' if i == self.num_pw else ' '
-                print(password, end=end)
+                print(password, end=end, file=out)
             return
         # print by columns
         columns = self.SCREEN_WIDTH // self.pw_length or 1
         for i, password in enumerate(self.passwords, start=1):
             end = '\n' if not (i % columns) or (i == self.num_pw) else ' '
-            print(password, end=end)
+            print(password, end=end, file=out)
