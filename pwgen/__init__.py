@@ -99,7 +99,7 @@ class PwGen(object):
             yield self.generate(chars)
 
     def print(self, out: TextIO=sys.stdout) -> None:
-        """Prints outputs passwords in one line or by columns"""
+        """Prints passwords in one line or by columns"""
         if self.one_line:
             for i, password in enumerate(self.passwords, start=1):
                 end = '\n' if i == self.num_pw else ' '
