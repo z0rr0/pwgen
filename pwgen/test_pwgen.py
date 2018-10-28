@@ -97,6 +97,16 @@ class PwGenTestCase(unittest.TestCase):
             self.assertEqual(pw_length, len(password))
             self.assertTrue(all(c not in remove_chars for c in password), f'password={password}')
 
+    def test_custom_output(self):
+        num_pw = 32
+        pwgen = PwGen(17, num_pw=num_pw, one_line=True)
+
+        out = io.StringIO()
+        pwgen.print(out=out)
+
+        passwords = out.getvalue()
+        self.assertEqual(len(passwords.split()), num_pw)
+
 
 if __name__ == '__main__':
     unittest.main()
