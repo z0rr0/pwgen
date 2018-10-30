@@ -1,6 +1,8 @@
 # PwGen
 
+[![version](https://img.shields.io/github/tag/z0rr0/pwgen.svg)](https://github.com/z0rr0/pwgen/releases/latest)
 [![Build Status](https://travis-ci.com/z0rr0/pwgen.svg?branch=master)](https://travis-ci.com/z0rr0/pwgen)
+[![license](https://img.shields.io/github/license/z0rr0/pwgen.svg)](https://github.com/z0rr0/pwgen/blob/master/LICENSE)
 
 PwGen - generate pronounceable passwords
 
